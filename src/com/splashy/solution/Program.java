@@ -1,5 +1,4 @@
-package com.tron.dice;
-
+package com.splashy.soution;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -37,15 +36,14 @@ class Program {
         if (next == null) {
             backward();
             next = stack.lastElement();
+            System.out.println("back");
             if (next == start) {
                 System.out.println("from begin");
             }
-            System.out.println("back");
         } else {
             forward(node, next);
             System.out.println("forward " + next);
         }
-        System.out.println(stack);
         return sniffer(next);
     }
 
@@ -70,10 +68,10 @@ class Program {
     }
 
     private void updateOneNode(Node node) {
-        int left = -1;
-        int right = -1;
-        int up = -1;
-        int down = -1;
+        int leftIndex = -1;
+        int rightIndex = -1;
+        int upIndex = -1;
+        int downIndex = -1;
 
         int leftDistance = Integer.MAX_VALUE;
         int rightDistance = Integer.MAX_VALUE;
@@ -86,12 +84,12 @@ class Program {
             if (item.getY() == node.getY()) {
                 int xDistance = item.getX() - node.getX();
                 if (xDistance > 0 && xDistance < rightDistance) {
-                    right = i;
+                    rightIndex = i;
                     rightDistance = xDistance;
                 }
 
                 if (xDistance < 0 && -xDistance < leftDistance) {
-                    left = i;
+                    leftIndex = i;
                     leftDistance = -xDistance;
                 }
             }
@@ -99,56 +97,69 @@ class Program {
             if (item.getX() == node.getX()) {
                 int yDistance = item.getY() - node.getY();
                 if (yDistance > 0 && yDistance < upDistance) {
-                    up = i;
+                    upIndex = i;
                     upDistance = yDistance;
                 }
                 if (yDistance < 0 && -yDistance < downDistance) {
-                    down = i;
+                    downIndex = i;
                     downDistance = -yDistance;
                 }
             }
         }
 
         node.clearAvailable();
-        for (int i : new int[] {up, down, left, right}) {
-            if (i > 0) {
-                if (checkAvailable(node, rest.get(i), i)) {
-                    node.addAvailable(rest.get(i));
-                }
+
+        for (int direction = 0; direction < 4; direction++) {
+            int index = new int[] {upIndex, downIndex, leftIndex, rightIndex}[direction];
+
+            if (index == -1) {
+                continue;
+            }
+            boolean valid, checkEnd, checkCurrent;
+            Node available = rest.get(index);
+
+            checkEnd = checkAvailable(node, available, end, direction);
+            checkCurrent = checkAvailable(node, available, stack.lastElement(), direction);
+
+            if (node == start) {
+                valid = checkEnd;
+            } else {
+                valid = checkCurrent && checkEnd;
+            }
+
+            if (valid) {
+                node.addAvailable(available);
             }
         }
     }
 
-    private boolean checkAvailable(Node node, Node availableNode, int direction) {
-        Node currentNode = stack.lastElement();
-        if (currentNode == start) {
-            return true;
-        }
+    private boolean checkAvailable(Node node, Node availableNode, Node specialNode, int direction) {
+
         if (direction == 0) {
             // up
-            if (node.getX() == currentNode.getX()) {
-                return currentNode.getY() > availableNode.getY();
+            if (node.getX() == specialNode.getX() && specialNode.getY() > node.getY()) {
+                return specialNode.getY() > availableNode.getY();
             } else {
                 return true;
             }
         } else if (direction == 1) {
             // down
-            if (node.getX() == currentNode.getX()) {
-                return currentNode.getY() < availableNode.getY();
+            if (node.getX() == specialNode.getX() && specialNode.getY() < node.getY()) {
+                return specialNode.getY() < availableNode.getY();
             } else {
                 return true;
             }
         } else if (direction == 2) {
             // left
-            if (node.getY() == currentNode.getY()) {
-                return currentNode.getX() < availableNode.getX();
+            if (node.getY() == specialNode.getY() && specialNode.getX() < node.getX()) {
+                return specialNode.getX() < availableNode.getX();
             } else {
                 return true;
             }
         } else if (direction == 3) {
             // right
-            if (node.getY() == currentNode.getY()) {
-                return currentNode.getX() > availableNode.getX();
+            if (node.getY() == specialNode.getY() && specialNode.getX() > node.getX()) {
+                return specialNode.getX() > availableNode.getX();
             } else {
                 return true;
             }

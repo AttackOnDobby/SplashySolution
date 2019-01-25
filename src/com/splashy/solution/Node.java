@@ -1,4 +1,4 @@
-package com.tron.dice;
+package com.splashy.soution;
 
 import java.util.ArrayList;
 import java.util.List;
