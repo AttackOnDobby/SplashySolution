@@ -1,4 +1,4 @@
-package com.splashy.soution;
+package com.splashy.solution;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,7 @@ public class Node {
 
     private List<Node> availableList = new ArrayList<>();
 
-    private boolean inQueue;
-
-    public Node(int x, int y) {
+    Node(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -48,6 +46,6 @@ public class Node {
 
     @Override
     public String toString() {
-        return "x: " + getX() + " y: " + getY();
+        return "(" + getX() + ", " + getY() + ")";
     }
 }

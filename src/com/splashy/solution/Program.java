@@ -1,4 +1,4 @@
-package com.splashy.soution;
+package com.splashy.solution;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -23,6 +23,14 @@ class Program {
         updateRest();
 
         sniffer(start);
+
+        StringBuffer result = new StringBuffer();
+        for (Node node : stack) {
+            result.append(node.toString()).append(" -> ");
+        }
+        result.append(end.toString());
+
+        System.out.println(result);
     }
 
     private boolean sniffer(Node node) {
